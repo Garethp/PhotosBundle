@@ -1,0 +1,35 @@
+{
+	"name" : "Garethp/PhotosBundle",
+	"description" : "My Demo Bundle",
+	"type" : "symfony-bundle",
+	"authors": [
+		{
+			"name" : "Gareth Parker",
+			"email" : "blackfireweb@gmail.com"
+		}
+	],
+	"keywords" : [
+		"photo bundle"
+	],
+
+	"licence": [
+		"MIT"
+	],
+
+	"require": {
+
+	},
+	"autoload": {
+		"psr-0" : {
+			"Garethp\\PhotosBundle" : ""
+		}
+	},
+	"target-dir": "Garethp/PhotosBundle",
+	"repositories" : [{
+	}],
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "2.2-dev"
+		}
+	}
+}
