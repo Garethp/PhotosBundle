@@ -1,5 +1,5 @@
 {
-	"name" : "Garethp/PhotosBundle",
+	"name" : "garethp/photos-bundle",
 	"description" : "My Demo Bundle",
 	"type" : "symfony-bundle",
 	"authors": [
