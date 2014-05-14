@@ -1,0 +1,26 @@
+Garethp\PhotosBundle\Entity\Photo:
+    type: entity
+    table: photos
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            type: string
+            length: 255
+            nullable: true
+        filename:
+            type: string
+            length: 255
+        timestamp:
+            type: datetime
+    lifecycleCallbacks:
+        prePersist: [ preUpload ]
+        postPersist: [ upload ]
+        preUpdate: [ preUpload ]
+        postUpdate: [ upload ]
+        preRemove: [ storeFilenameForRemove ]
+        postRemove: [ removeUpload ]

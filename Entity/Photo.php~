@@ -1,0 +1,194 @@
+<?php
+
+namespace Photos\Bundle\PhotosBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ */
+class Photo
+{
+    /**
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $title;
+
+    /**
+     * @var string
+     */
+    private $filename;
+
+	/**
+	 * @Assert\File(maxSize="6000000")
+	 */
+	private $file;
+
+	/**
+	 * @var \DateTime
+	 */
+	private $timestamp;
+
+	private $temp;
+
+	/**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return Photo
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     * @return Photo
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+	public function getAbsolutePath()
+	{
+		return null === $this->filename
+			? null
+			: $this->getUploadRootDir().'/' . $this->id . " - " . $this->filename;
+	}
+
+	public function getWebPath()
+	{
+		return null === $this->filename
+			? null
+			: $this->getUploadDir().'/' . $this->id . " - " . $this->filename;
+	}
+
+	protected function getUploadRootDir()
+	{
+		// the absolute directory path where uploaded
+		// documents should be saved
+		return __DIR__.'/../../../../../web/'.$this->getUploadDir();
+	}
+
+	protected function getUploadDir()
+	{
+		// get rid of the __DIR__ so it doesn't screw up
+		// when displaying uploaded doc/image in the view.
+		return 'uploads/photos';
+	}
+
+	public function upload()
+	{
+		if(null === $this->getFile())
+			return;
+
+		if(isset($this->temp))
+		{
+			unlink($this->temp);
+			$this->temp = null;
+		}
+
+		$this->getFile()->move(
+			$this->getUploadRootDir(),
+			$this->id . " - " . $this->getFile()->getClientOriginalName()
+		);
+
+		$this->setFile(null);
+	}
+
+	public function storeFilenameForRemove()
+	{
+		$this->temp = $this->getAbsolutePath();
+	}
+
+	public function removeUpload()
+	{
+		if(isset($this->temp))
+		{
+			unlink($this->temp);
+		}
+	}
+
+	/**
+	 * Sets file.
+	 *
+	 * @param UploadedFile $file
+	 */
+	public function setFile(UploadedFile $file = null)
+	{
+		$this->file = $file;
+
+		if(is_file($this->getAbsolutePath()))
+		{
+			$this->temp = $this->getAbsolutePath();
+		}
+		else
+		{
+			$this->filename = 'initial';
+		}
+	}
+
+	/**
+	 * Get file.
+	 *
+	 * @return UploadedFile
+	 */
+	public function getFile()
+	{
+		return $this->file;
+	}
+
+	public function preUpload()
+	{
+		if (null !== $this->getFile()) {
+			$this->filename = $this->getFile()->getClientOriginalName();
+		}
+	}
+}

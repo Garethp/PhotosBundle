@@ -1,0 +1,7 @@
+garethp_photos_homepage:
+    pattern:  /photos
+    defaults: { _controller: GarethpPhotosBundle:Default:index }
+
+garethp_photos_upload:
+    pattern: /photos/upload
+    defaults: { _controller: GarethpPhotosBundle:Default:upload }
